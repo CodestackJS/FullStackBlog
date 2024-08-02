@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Models;
 using api.Models.DTO;
 using api.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -25,9 +26,50 @@ namespace api.Controllers
             return _data.AddUser(UserToAdd);
         }
 
+        //GetAllUser Endpoint
+        [HttpGet("GetAllUsers")]
+        
+
+        public IEnumerable<UserModel> GetAllUsers()
+        {
+            return _data.GetAllUsers();
+        }
+
+        //GetUserByUserName
+        [HttpGet("GetUserByUsername/{UserName}")]
+           public UserIdDTO GetUserIdDTOByUserName(string userName)
+           {
+            return _data.GetUserIdDTOByUserName(userName);
+           }
+        
+
         //login
+
+        [HttpPost("Login")]
+
+        public IActionResult Login([FromBody] LoginDTO User)
+        {
+            return _data.Login(User);
+        }
+
+
+       
+         //delete user account
+         [HttpPost("DeleteUser/{userToDelete}")]
+        public bool DeleteUser (string userToDelete)
+        {
+            return _data.DeleteUser(userToDelete);
+        }
+
+
+
         //update user account
-        //delete user account
+        [HttpPost("UpdateUser")]
+        
+        public bool UpdateUser(int id, string userName)
+        {
+            return _data.UpdateUser(id,userName);
+        }
 
         
     }
