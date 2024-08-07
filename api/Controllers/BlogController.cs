@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using api.Models;
 using api.Services;
@@ -27,12 +28,12 @@ namespace api.Controllers
 
 
         // //GetAllBlogItems
-        // [HttpGet("GetBlogItem")]
+        [HttpGet("GetBlogItem")]
 
-        // public IEnumerable<BlogItemModel> GetBlogItems()
-        // {
-        //     return _data.GetBlogItems();
-        // }
+        public IEnumerable<BlogItemModel> GetBlogItems()
+        {
+            return _data.GetBlogItems();
+        }
 
         //GetBlogItemsByCategory
         [HttpGet("GetBlogItemByCategory/{Category}")]
@@ -43,18 +44,18 @@ namespace api.Controllers
         }
 
         //GetItemsByTAg
-        // [HttpGet("GetItemsByTag/{Tag}")]
-        // public List<BlogItemModel> GetItemByTag(string Tag)
-        // {
-        //     return _data.GetItemByTag(Tag);
-        // }
+        [HttpGet("GetItemsByTag/{Tag}")]
+        public List<BlogItemModel> GetItemByTag(string Tag)
+        {
+            return _data.GetItemByTag(Tag);
+        }
 
         //GetBlogItemsByDate
-        // [HttpGet("GetItemsByDate/{Date}")]
-        // public IEnumerable<BlogItemModel> GetItemsByDate(string Date)
-        // {
-        //     return _data.GetItemByDate(Date);
-        // }
+        [HttpGet("GetItemsByDate/{Date}")]
+        public IEnumerable<BlogItemModel> GetItemsByDate(string Date)
+        {
+            return _data.GetItemByDate(Date);
+        }
 
         //UpdateBlogItems
         [HttpPost("UpdateBlogItems")]
@@ -64,12 +65,19 @@ namespace api.Controllers
             return _data.UpdateBlogItems(BlogUpdate);
         }
 
-        // //DeleteBlogItems
-        // [HttpPost("DeleteblogItem/{BlogItemToDelete}")]
-        // public bool DeleteBlogItems(BlogItemModel BlogDelete)
-        // {
-        //     return _data.DeleteBlogItems(BlogDelete);
-        // }
+        //DeleteBlogItems
+        [HttpPost("DeleteblogItem/{BlogItemToDelete}")]
+        public bool DeleteBlogItems(BlogItemModel BlogDelete)
+        {
+            return _data.DeleteBlogItems(BlogDelete);
+        }
+
+        //GetPublishedBlogItems
+        [HttpGet("GetPublishedItems")]
+        public IEnumerable<BlogItemModel> GetPublishedItems()
+        {
+            return _data.GetPublishedItems();
+        }
 
     }
 }

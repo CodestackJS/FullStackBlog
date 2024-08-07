@@ -25,15 +25,16 @@ public class BlogItemService : ControllerBase
         return result;
     }
 
-    // public bool DeleteBlogItems(BlogItemModel blogDelete)
-    // {
-        
-    // }
+    public bool DeleteBlogItems(BlogItemModel blogDelete)
+    {
+        _context.Update<BlogItemModel>(blogDelete);
+        return _context.SaveChanges() !=0;
+    }
 
-    // public IEnumerable<BlogItemModel> GetBlogItems()
-    // {
-        
-    // }
+    public IEnumerable<BlogItemModel> GetBlogItems()
+    {
+       return _context.BlogInfo; 
+    }
 
    public IEnumerable<BlogItemModel> GetItemByCategory(string category)
     {
@@ -42,7 +43,7 @@ public class BlogItemService : ControllerBase
 
     internal IEnumerable<BlogItemModel> GetItemByDate(string date)
     {
-        throw new NotImplementedException();
+        return _context.BlogInfo.Where(item => item.Date == date);
     }
 
     //    public IEnumerable<BlogItemModel> GetItemByDate(string date)
@@ -50,19 +51,35 @@ public class BlogItemService : ControllerBase
 
     //     }
 
-    // public List<BlogItemModel> GetItemByTag(string tag)
-    // {
-    //     List<BlogItemModel> AllBlogWithTag = new List<BlogItemModel>();
-    //     var allItems = GetAllBlogItems().ToList();
-    //     for(int i = 0; i < allItems.Count; i++)
-    //     {
-    //         BlogItemModel Item = allItems[i];
-    //         var itemArr = ItemsFeature.Tag.Split(',')
-    //     }
-    // }
-
-    internal bool UpdateBlogItems(BlogItemModel blogUpdate)
+    public List<BlogItemModel> GetItemByTag(string tag)
     {
-        throw new NotImplementedException();
+        List<BlogItemModel> AllBlogWithTag = new List<BlogItemModel>();
+        var allItems = GetBlogItems().ToList();
+        for(int i = 0; i < allItems.Count; i++)
+        {
+            BlogItemModel Item = allItems[i];
+            var itemArr = Item.Tag.Split(',');
+
+            for(int j = 0; j < itemArr.Length; j++)
+            {
+                if(itemArr[j].Contains(tag))
+                {
+                    AllBlogWithTag.Add(Item);
+                    break;
+                }
+            }
+        }
+        return AllBlogWithTag;
+    }
+
+    public bool UpdateBlogItems(BlogItemModel blogUpdate)
+    {
+        _context.Update<BlogItemModel>(blogUpdate);
+        return _context.SaveChanges() !=0;
+    }
+
+    public IEnumerable<BlogItemModel> GetPublishedItems()
+    {
+        return _context.BlogInfo.Where(item => item.IsPublished);
     }
 }
