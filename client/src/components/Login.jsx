@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { Container, Row, Col, Button, Form } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom';
+import { GetLoggedInUser, login } from '../Services/DataService';
 
+const Login = ({onLogin}) => {
 
-const Login = () => {
+    let navigate = useNavigate();
 
     const [Username, setUsername] = useState('');
     const [Password, setPassword] = useState('');
@@ -18,18 +21,29 @@ const Login = () => {
     }
 
     //Function or method to handle our submit
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         let userData = {
-            test1: Username,
-            test2: Password
+            Username: Username,
+            Password: Password
         }
-        console.log(userData);
+        console.log(userData)
+        onLogin(userData)
+        let token = await login(userData)
+        console.log(token.token,"This should log the token");
+        if(token.token != null)
+        {
+            localStorage.setItem("Token", token.token);
+            GetLoggedInUser(Username);
+            navigate('/Dashboard')
+        }
+
     }
+
 
 
     return (
         <>
-            <containter>
+            <Container>
                 <Row>
                     <Col className="form-container d-flex justify-content-center">
                     {/* <h1>Account Page</h1> */}
@@ -51,13 +65,13 @@ const Login = () => {
                                 Login
                             </Button>
                             <p className='mt-3'>Don't have an account?</p>
-                            <Button variant="outline-primary" onClick={handleSubmit}>
+                            <Button variant="outline-primary" onClick={() => navigate('/CreateAccount')}>
                                 Create Account 
                             </Button>
                         </Form>
                     </Col>
                 </Row>
-            </containter>
+            </Container>
 
 
 

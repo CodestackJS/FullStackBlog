@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { Container, Row, Col, Button, Modal, Form, Accordion, ListGroup } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { checkToken, GetLoggedInUser, LoggedInData } from "../Services/DataService";
+
+
 
 const Dashboard = ({ isDarkMode }) => {
     // usestates
@@ -12,6 +16,8 @@ const Dashboard = ({ isDarkMode }) => {
     const [blogTags, setBlogTags] = useState("");
 
     const [edit, setEdit] = useState(false);
+    const [userId, setUserId] = useState(0);
+    const [publisherName, setPublisherName] = useState("");
 
     const [blogItems, setBlogItems] = useState([
         {
@@ -66,6 +72,47 @@ const Dashboard = ({ isDarkMode }) => {
         },
     ]);
 
+    const handleSaveWithPublish = () => 
+        {
+            let {publisherName, userId} = LoggedInData();
+        
+            const published = {
+            Id: 0,
+            UserId: userId,
+            PublisherName: publisherName,
+            Tag: blogTags,
+            Title: blogTitle,
+            Image: blogImage,
+            Description: blogDescription,
+            Date: new Date(),
+            Category: blogCategory,
+            IsPublished: true,
+            IsDeleted: false,
+
+        }
+        console.log(published)
+    }
+
+    const handleSaveWithUnpublish = () => {
+        let {publisherName, userId} = LoggedInData();
+        
+            const notPublished = {
+            Id: 0,
+            UserId: userId,
+            PublisherName: publisherName,
+            Tag: blogTags,
+            Title: blogTitle,
+            Image: blogImage,
+            Description: blogDescription,
+            Date: new Date(),
+            Category: blogCategory,
+            IsPublished: false,
+            IsDeleted: false,
+
+        }
+        console.log(notPublished)
+    }
+
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -101,8 +148,28 @@ const Dashboard = ({ isDarkMode }) => {
     const handleTag = (e) => {
         setBlogTags(e.target.value);
     }
-    const handleImage = (e) => {
-        setBlogImage(e.target.value);
+    // const handleImage = (e) => {
+    //     setBlogImage(e.target.value);
+    // }
+
+    let navigate = useNavigate();
+    //useEffect is the first thing that fires onload. : when the component load this will fire
+    useEffect(() => {
+        if(!checkToken())
+        {
+            navigate('/Login')
+        }
+    }, [])
+    
+    const handleImage = async (e) => 
+    {
+        let file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => 
+        {
+         console.log(reader.result);
+        }
+        reader.readAsDataURL(file);
     }
 
     return (
@@ -150,9 +217,9 @@ const Dashboard = ({ isDarkMode }) => {
                                 <Form.Control type="text" placeholder="Enter Tag" />
                             </Form.Group>
 
-                            <Form.Group className="mb-3 " controlId="Image" value={blogImage} onChange={handleImage}>
+                            <Form.Group className="mb-3 " controlId="Image">
                                 <Form.Label>Pick an Image</Form.Label>
-                                <Form.Control type="file" placeholder="Select an Image from file" />
+                                <Form.Control type="file" placeholder="Select an Image from file" accept="image/png, image/jpg" onChange={handleImage}  />
 
                             </Form.Group>
                         </Form>
@@ -161,10 +228,10 @@ const Dashboard = ({ isDarkMode }) => {
                         <Button variant="outline-secondary" onClick={handleClose}>
                             Cancel
                         </Button>
-                        <Button variant="outline-primary" onClick={handleClose}>
+                        <Button variant="outline-primary" onClick={handleSaveWithUnpublish}>
                             {edit ? "Save Changes" : "Save"}
                         </Button>
-                        <Button variant="outline-primary" onClick={handleClose}>
+                        <Button variant="outline-primary" onClick={handleSaveWithPublish}>
                             {edit ? "Save Changes" : "Save"} and Publish
                         </Button>
                     </Modal.Footer>

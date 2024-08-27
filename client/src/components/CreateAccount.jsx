@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Container, Row, Col, Button, Form } from 'react-bootstrap'
-
+import { createAccount } from '../Services/DataService';
 
 const CreateAccount = () => {
 
@@ -20,16 +20,17 @@ const CreateAccount = () => {
     //Function or method to handle our submit
     const handleSubmit = () => {
         let userData = {
-            test1: Username,
-            test2: Password
+            username: Username,
+            password: Password
         }
+        createAccount(userData);
         console.log(userData);
     }
 
 
     return (
         <>
-            <containter>
+            <Container>
                 <Row>
                     <Col className="form-container d-flex justify-content-center">
                     {/* <h1>Account Page</h1> */}
@@ -52,7 +53,7 @@ const CreateAccount = () => {
                         </Form>
                     </Col>
                 </Row>
-            </containter>
+            </Container>
 
 
 

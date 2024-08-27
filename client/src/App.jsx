@@ -11,6 +11,12 @@ import {BrowserRouter, Routes, Route} from 'react-router-dom';
 const App = () => {
 
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const[user, setUser] = useState(null);
+
+  const handleLogin = (userData) => {
+    setUser(userData)
+  }
+
 
   useEffect(() => {
     
@@ -50,7 +56,7 @@ const App = () => {
                 </Col>
                 <Routes>
                   <Route path="/" element={<BlogPage/>}/>
-                  <Route path="/Login" element={<Login/>}/>
+                  <Route path="/Login" element={<Login onLogin={handleLogin}/>}/>
                   <Route path="/CreateAccount" element={<CreateAccount/>}/>
                   <Route path="/Dashboard" element={<Dashboard isDarkMode={isDarkMode}/>}/>
                     
