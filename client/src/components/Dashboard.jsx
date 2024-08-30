@@ -2,12 +2,16 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { Container, Row, Col, Button, Modal, Form, Accordion, ListGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { checkToken, GetLoggedInUser, LoggedInData } from "../Services/DataService";
+import { AddBlogItems, checkToken, GetItemsByUserId, GetLoggedInUser, LoggedInData } from "../Services/DataService";
+import Spinner from 'react-bootstrap/Spinner';
 
 
 
-const Dashboard = ({ isDarkMode }) => {
+
+
+const Dashboard = ({ isDarkMode, onLogin }) => {
     // usestates
+    let example = { name: 'jacob', age: 22 };
 
     const [blogTitle, setBlogTitle] = useState("");
     const [blogImage, setBlogImage] = useState("");
@@ -19,64 +23,13 @@ const Dashboard = ({ isDarkMode }) => {
     const [userId, setUserId] = useState(0);
     const [publisherName, setPublisherName] = useState("");
 
-    const [blogItems, setBlogItems] = useState([
-        {
-            Id: 1,
-            Title: "Top Finishing and Crossing Drills",
-            Publisher: "anonymous",
-            Date: "01-13-2022",
-            Text: "Developing finishing and crossing skills is an important aspect of soccer that can greatly constribute to your player.",
-            Image:
-                "./assets/Images/3soccerballs.jpg",
-            Published: true
-        },
-        {
-            Id: 2,
-            Title: "6 Soccer Drills to Work on Defense",
-            Publisher: "anonymous",
-            Date: "01-14-2022",
-            Text: "A strong defense is the backbone of any successful soccer team",
-            Image:
-                "./assets/Images/3soccerballs.jpg",
-            Published: true
-        },
-        {
-            Id: 3,
-            Title: "5 Small Side Games",
-            Publisher: "anonymous",
-            Date: "01-15-2022",
-            Text: "Small-sided games create a fast-paced and intense environment.",
-            Image:
-                "./assets/Images/3soccerballs.jpg",
-            Published: true
-        },
-        {
-            Id: 4,
-            Title: "5 Fun 1 V 1 Youth Soccer Activites",
-            Publisher: "anonymous",
-            Date: "01-15-2022",
-            Text: "One of the best ways to naturally bring out the competitive nature.",
-            Image:
-                "./assets/Images/3soccerballs.jpg",
-            Published: false
-        },
-        {
-            Id: 5,
-            Title: "5 Fun warm up soccer drills",
-            Publisher: "anonymous",
-            Date: "01-15-2022",
-            Text: "One of the challenges for youth soccer coaches is to make sure their players are always excited to come to practice.",
-            Image:
-                "./assets/Images/3soccerballs.jpg",
-            Published: false
-        },
-    ]);
+    const [blogItems, setBlogItems] = useState([]);
+    const [isLoading, setIsLoading ] = useState(true);
 
-    const handleSaveWithPublish = () => 
-        {
-            let {publisherName, userId} = LoggedInData();
-        
-            const published = {
+    const handleSaveWithPublish = async () => {
+        let { publisherName, userId } = LoggedInData();
+
+        const published = {
             Id: 0,
             UserId: userId,
             PublisherName: publisherName,
@@ -91,12 +44,21 @@ const Dashboard = ({ isDarkMode }) => {
 
         }
         console.log(published)
+        handleClose();
+        let result = await AddBlogItems(published)
+        if (result) {
+            let userBlogItems = await GetItemsByUserId(userId);
+            setBlogItems(userBlogItems);
+            console.log(userBlogItems, "This is frou our UserBlogItems");
+
+
+        }
     }
 
-    const handleSaveWithUnpublish = () => {
-        let {publisherName, userId} = LoggedInData();
-        
-            const notPublished = {
+    const handleSaveWithUnpublish = async () => {
+        let { publisherName, userId } = LoggedInData();
+
+        const notPublished = {
             Id: 0,
             UserId: userId,
             PublisherName: publisherName,
@@ -111,6 +73,13 @@ const Dashboard = ({ isDarkMode }) => {
 
         }
         console.log(notPublished)
+        handleClose();
+        let result = await AddBlogItems(notPublished)
+        if (result) {
+            let userBlogItems = await GetItemsByUserId(userId);
+            setBlogItems(userBlogItems);
+            console.log(userBlogItems, "This is frou our UserBlogItems");
+        }
     }
 
     const [show, setShow] = useState(false);
@@ -152,22 +121,39 @@ const Dashboard = ({ isDarkMode }) => {
     //     setBlogImage(e.target.value);
     // }
 
+    const loadUserData = async () => {
+        let userInfo = JSON.parse(localStorage.getItem("UserData"));
+        onLogin(userInfo)
+        setUserId(userInfo.userId);
+        setPublisherName(userInfo.publisherName);
+        console.log("User info:", userInfo);
+        setTimeout(async () => {
+    
+          let userBlogItems = await GetItemsByUserId(userInfo.userId)
+          setBlogItems(userBlogItems);
+        
+          setIsLoading(false);
+          console.log("Loaded blgo items: ", userBlogItems);
+        },1000)
+    
+    }
+
     let navigate = useNavigate();
     //useEffect is the first thing that fires onload. : when the component load this will fire
     useEffect(() => {
-        if(!checkToken())
-        {
+        if (!checkToken()) {
             navigate('/Login')
         }
+        else{
+            loadUserData();
+        }
     }, [])
-    
-    const handleImage = async (e) => 
-    {
+
+    const handleImage = async (e) => {
         let file = e.target.files[0];
         const reader = new FileReader();
-        reader.onloadend = () => 
-        {
-         console.log(reader.result);
+        reader.onloadend = () => {
+            console.log(reader.result);
         }
         reader.readAsDataURL(file);
     }
@@ -202,8 +188,9 @@ const Dashboard = ({ isDarkMode }) => {
                                 <Form.Control as="textarea" placeholder="Enter Description" value={blogDescription} onChange={handleDescription} />
                             </Form.Group>
 
-                            <Form.Group>
-                                <Form.Select controlId="Category"> value={blogCategory} onChange={handleCategory}
+                            <Form.Group controlId="Category">
+                                <Form.Label>Category</Form.Label>
+                                <Form.Select > value={blogCategory} onChange={handleCategory}
                                     <option>Select Category</option>
                                     <option value="Food">Food</option>
                                     <option value="Fitness">Fitness</option>
@@ -212,14 +199,14 @@ const Dashboard = ({ isDarkMode }) => {
                                 </Form.Select>
                             </Form.Group>
 
-                            <Form.Group className="mb-3" controlId="Tags" value={blogTags}> onChange={handleTag}
+                            <Form.Group className="mb-3" controlId="Tags" value={blogTags} onChange={handleTag}> 
                                 <Form.Label>Tags</Form.Label>
                                 <Form.Control type="text" placeholder="Enter Tag" />
                             </Form.Group>
 
                             <Form.Group className="mb-3 " controlId="Image">
                                 <Form.Label>Pick an Image</Form.Label>
-                                <Form.Control type="file" placeholder="Select an Image from file" accept="image/png, image/jpg" onChange={handleImage}  />
+                                <Form.Control type="file" placeholder="Select an Image from file" accept="image/png, image/jpg" onChange={handleImage} />
 
                             </Form.Group>
                         </Form>
@@ -236,21 +223,23 @@ const Dashboard = ({ isDarkMode }) => {
                         </Button>
                     </Modal.Footer>
                 </Modal>
-
+                {/* Accordian below */}
+                {isLoading ? <><Spinner animation="grow" variant="info"/><h2>...Loading</h2> </> : blogItems.length == 0 ? <><h2>no blog items to show</h2></>: 
                 <Accordion defaultActiveKey={['0']} alwaysOpen>
+
                     <Accordion.Item eventKey="0">
                         <Accordion.Header>Published</Accordion.Header>
                         <Accordion.Body>
                             {
-                                blogItems.map(item => item.Published &&
-                                    <ListGroup key={item.Id}>{item.Title}
+                                blogItems.map((item, i) => item.isPublished && <ListGroup key={i}>{item.title}
+
                                     <Col className="d-flex justify-content-end mx-2">
                                         <Button variant="outline-danger mx-2">Delete</Button>
                                         <Button variant="outline-info mx-2">Edit</Button>
-                                        <Button variant="outline-primary mx-2">Publish</Button>
+                                        <Button variant="outline-primary mx-2">Unpublish</Button>
                                     </Col>
-                                    </ListGroup>
-                                )
+
+                                </ListGroup>)
                             }
                         </Accordion.Body>
                     </Accordion.Item>
@@ -258,19 +247,19 @@ const Dashboard = ({ isDarkMode }) => {
                         <Accordion.Header>Unpublished</Accordion.Header>
                         <Accordion.Body>
                             {
-                                blogItems.map(item => !item.Published &&
-                                    <ListGroup key={item.Id}>{item.Title}
-                                        <Col className="d-flex justify-content-end mx-2">
-                                            <Button variant="outline-danger mx-2">Delete</Button>
-                                            <Button variant="outline-info mx-2">Edit</Button>
-                                            <Button variant="outline-primary mx-2">Publish</Button>
-                                        </Col>
-                                    </ListGroup>
-                                )
+                                blogItems.map((item, i) => !item.isPublished && <ListGroup key={i}>{item.title}
+
+                                    <Col className="d-flex justify-content-end mx-2">
+                                        <Button variant="outline-danger mx-2">Delete</Button>
+                                        <Button variant="outline-info mx-2">Edit</Button>
+                                        <Button variant="outline-primary mx-2">Publish</Button>
+                                    </Col>
+                                </ListGroup>)
                             }
                         </Accordion.Body>
                     </Accordion.Item>
                 </Accordion>
+}
 
             </Container>
         </>

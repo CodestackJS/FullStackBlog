@@ -78,8 +78,8 @@ public class BlogItemService : ControllerBase
         return _context.SaveChanges() !=0;
     }
 
-    public IEnumerable<BlogItemModel> GetPublishedItems()
+    public IEnumerable<BlogItemModel> GetItemsByUserId(int userId)
     {
-        return _context.BlogInfo.Where(item => item.IsPublished);
+        return _context.BlogInfo.Where(item => item.UserId == userId);
     }
 }

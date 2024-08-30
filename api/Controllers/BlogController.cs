@@ -72,12 +72,12 @@ namespace api.Controllers
             return _data.DeleteBlogItems(BlogDelete);
         }
 
-        //GetPublishedBlogItems
-        [HttpGet("GetPublishedItems")]
-        public IEnumerable<BlogItemModel> GetPublishedItems()
-        {
-            return _data.GetPublishedItems();
-        }
+        //WE need a GetItemsByUserId 
+    [HttpGet("GetItemsByUserId/{UserId}")]
 
+    public IEnumerable<BlogItemModel> GetItemsByUserId (int UserId)
+    {
+        return _data.GetItemsByUserId(UserId);
+    }
     }
 }

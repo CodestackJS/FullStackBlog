@@ -10,7 +10,7 @@ import {BrowserRouter, Routes, Route} from 'react-router-dom';
 
 const App = () => {
 
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const[user, setUser] = useState(null);
 
   const handleLogin = (userData) => {
@@ -47,7 +47,7 @@ const App = () => {
             style={{ minHeight: "100vh", padding: '0px' }}
           >
               <Container className='p-0' fluid>
-                <NavBar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+              <NavBar  isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} user={user} />
               </Container>
               <CarouselHero isDarkMode={isDarkMode} />
               <Row className='text-center'>
@@ -56,9 +56,9 @@ const App = () => {
                 </Col>
                 <Routes>
                   <Route path="/" element={<BlogPage/>}/>
-                  <Route path="/Login" element={<Login onLogin={handleLogin}/>}/>
+                  <Route path="/Login" element={<Login/>}/>
                   <Route path="/CreateAccount" element={<CreateAccount/>}/>
-                  <Route path="/Dashboard" element={<Dashboard isDarkMode={isDarkMode}/>}/>
+                  <Route path="/Dashboard" element={<Dashboard isDarkMode={isDarkMode} onLogin={handleLogin}/>}/>
                     
                   
                 </Routes>
