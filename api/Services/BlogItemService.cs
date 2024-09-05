@@ -80,6 +80,12 @@ public class BlogItemService : ControllerBase
 
     public IEnumerable<BlogItemModel> GetItemsByUserId(int userId)
     {
-        return _context.BlogInfo.Where(item => item.UserId == userId);
+        return _context.BlogInfo.Where(item => item.UserId == userId && item.IsDeleted == false);
     }
+
+     internal IEnumerable<BlogItemModel> GetPublishedItems()
+        {
+            return _context.BlogInfo.Where(item => item.IsPublished);
+        }
+
 }

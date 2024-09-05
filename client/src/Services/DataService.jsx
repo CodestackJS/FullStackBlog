@@ -61,6 +61,10 @@ const login = async (loginUser) =>
 
     const LoggedInData = () =>
     {
+        // if(!userData)
+        // {
+             userData = JSON.parse(localStorage.getItem("UserData"))
+        // }
         return userData;
     }
 
@@ -124,6 +128,33 @@ const login = async (loginUser) =>
               return data;
         }
     
+
+        // Function to help us update our blog items
+        const updateBlogItems = async (blogItems) =>
+        {
+            const result = await fetch(`http://localhost:5156/api/blog/UpdateBlogItems`,{
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(blogItems)
+            })
+            if(!result.ok)
+            {
+                const message = `Yo yo you have an Error Check your code!${result.status}`
+                throw new Error(message);
+            }
+                let data = await result.json();
+                console.log(data,"from our UpdateBlogItems");
+                return data;
+        }
+
+        const getPublishedBlogItems = async () => {
+            let result = await fetch("http://localhost:5156/api/blog/GetPublishedItems")
+            let data = await result.json();
+            return data;
+        }
+        
     
     
-        export {checkToken,createAccount,login,GetLoggedInUser,LoggedInData,sendData,AddBlogItems,getBlogItems,GetItemsByUserId}
+        export {checkToken,createAccount,login,GetLoggedInUser,LoggedInData,sendData,AddBlogItems,getBlogItems,GetItemsByUserId, updateBlogItems, getPublishedBlogItems}
