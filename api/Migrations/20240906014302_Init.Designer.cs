@@ -11,7 +11,7 @@ using api.Services.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240731023427_Init")]
+    [Migration("20240906014302_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -51,6 +51,9 @@ namespace api.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("PublisherName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tag")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")

@@ -285,15 +285,31 @@ const Dashboard = ({ isDarkMode, onLogin }) => {
                             <Accordion.Header>Published</Accordion.Header>
                             <Accordion.Body>
                                 {
-                                    blogItems.map((item, i) => item.isPublished && <ListGroup key={i}>{item.title}
-
-                                        <Col className="d-flex justify-content-end mx-2">
-                                            <Button variant="outline-danger mx-2" onClick={() => handleDelete(item)}>Delete</Button>
-                                            <Button variant="outline-info mx-2" onClick={(e) => handleShow(e, item)}>Edit</Button>
-                                            <Button variant="outline-primary mx-2" onClick={() => handlePublish(item)}>Unpublish</Button>
-                                        </Col>
-
-                                    </ListGroup>)
+                                    blogItems.map((item, i) => item.isPublished && 
+                                    <ListGroup  as="ul"  className="mb-2" key={item.id}>
+                           
+                                    <ListGroup.Item as={"li"} md={2}><h3>Title:</h3>{ item.title}</ListGroup.Item>
+                                    <ListGroup.Item  as={"li"}  md={3}><h3>Description:</h3>{ item.description}</ListGroup.Item>
+                                    <ListGroup.Item  as={"li"} md={2}> <h3>Category:</h3> { item.category}</ListGroup.Item>
+                                    <ListGroup.Item  as={"li"}  md={2}><h3>Tags:</h3>{ item.tag}</ListGroup.Item>
+                                    <ListGroup.Item  as={"li"}  md={3}>
+                                     Image: {item.image ? item.image.slice(5, 14) : 'No image'}
+                                    </ListGroup.Item>
+                                    <ListGroup.Item  as={"li"}  className="d-flex justify-content-end">
+                                      <Button variant="outline-danger mx-2" onClick={() => handleDelete(item)}>
+                                        Delete
+                                      </Button>
+                                      <Button variant="outline-info mx-2" onClick={(e) => handleShow(e, item)}>
+                                        Edit
+                                      </Button>
+                                      <Button variant="outline-primary mx-2" onClick={() => handlePublish(item)}>
+                                        Unpublish
+                                      </Button>
+                                    </ListGroup.Item>
+                                 
+                                  
+                               
+                                </ListGroup>)
                                 }
                             </Accordion.Body>
                         </Accordion.Item>

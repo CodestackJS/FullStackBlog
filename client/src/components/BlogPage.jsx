@@ -15,6 +15,11 @@ const BlogPage = () => {
         setBlogItems(publishedItems)
     }
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US'); // This will format the date as M/D/YYYY
+    };
+
     return (
         <>
             <h1 className="text-center">Blog Page</h1>
@@ -30,32 +35,32 @@ const BlogPage = () => {
 
                                         <Row key={index}>
                                         <Col md={6}>
-                                            <Row style={{ border: "solid" }}>
-                                                <Col style={{ border: "solid" }} className='d-flex justify-content-center' md={12}>{item.title}</Col>
+                                            <Row style={{  }}>
+                                                <Col style={{  }} className='d-flex justify-content-center' md={12}><h2 style={{fontFamily:"sans-serif"}}>{item.title}</h2></Col>
                                                 <Col md={12}>
                                                     <Row>
                                                         <Col className='d-flex justify-content-center' md={6}>{item.publisherName}</Col>
-                                                        <Col style={{ border: "solid" }} md={6}>{item.data}</Col>
+                                                        <Col style={{  }} md={6}>Date: {formatDate(item.date)}</Col>
                                                     </Row>
                                                 </Col>
-                                                <Col style={{ border: "solid" }} className='d-flex justify-content-center' md={12}><Image src={item.image} width={"400px"} height={"200px"}/></Col>
+                                                <Col style={{  }} className='d-flex justify-content-center' md={12}><Image style={{borderRadius:"5%"}} src={item.image} width={"100%"} height={"100%"}/></Col>
                                             </Row>
                                         </Col>
-                                        <Col style={{ border: "solid" }} className='d-flex justify-content-center' md={6}>{item.descriptions}</Col>
+                                        <Col style={{  }} className='d-flex justify-content-center align-items-center' md={6}><p style={{fontSize:"26px"}}>"{item.description}"</p></Col>
                                     </Row> 
                                     :
                                     <Row key={index}>
-                                    <Col style={{ border: "solid" }} className="d-flex justify-content-center" md={6}>{item.descriptions}</Col>
+                                    <Col style={{  }} className="d-flex justify-content-center align-items-center" md={6}><p style={{fontSize:"26px"}}>"{item.description}"</p></Col>
                                     <Col md={6}>
-                                        <Row style={{ border: "solid" }} >
-                                            <Col style={{ border: "solid" }} className="d-flex justify-content-center" md={12}>{item.title}</Col>
+                                        <Row style={{  }} >
+                                            <Col style={{  }} className="d-flex justify-content-center" md={12}><h2 style={{fontFamily:"sans-serif"}}>{item.title}</h2></Col>
                                             <Col md={12}>
                                                 <Row>
                                                     <Col className="d-flex justify-content-center" md={6}>{item.publisherName}</Col>
-                                                    <Col className="text-center" style={{ border: "solid" }} md={6}>{item.date}</Col>
+                                                    <Col className="text-center" style={{  }} md={6}>Date: {formatDate(item.date)}</Col>
                                                 </Row>
                                             </Col>
-                                            <Col style={{ border: "solid" }} className="d-flex justify-content-center" md={12}><Image src={item.image} width={"400px"} height={"200px"} /></Col>
+                                            <Col style={{  }} className="d-flex justify-content-center" md={12}><Image style={{borderRadius:"5%"}}  src={item.image} width={"100%"} height={"100%"} /></Col>
                                         </Row>
                                     </Col>
                                 </Row>
