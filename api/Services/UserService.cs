@@ -66,7 +66,7 @@ public  PasswordDTO HashPassword(string password)
         //create a password DTO this is what will be returned
         //New instance of our PasswordDTO
         PasswordDTO newHashedPassword = new PasswordDTO();
-        //crete a new instance or byte 64 array and save it to Saltbytes
+        //create a new instance or byte 64 array and save it to Saltbytes
         byte[] SaltBytes = new byte [64];
         //RNGCryptoServiceProvider creates random number
         var provider = new RNGCryptoServiceProvider();
@@ -85,7 +85,7 @@ public  PasswordDTO HashPassword(string password)
     }
 
 
-//function to very user password
+//function to verify user password
 public bool VerifyUserPassword(string? Password, string?StoredHash, string?StoredSalt)
 {
     var SaltBytes = Convert.FromBase64String(StoredSalt);
