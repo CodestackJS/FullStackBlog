@@ -7,6 +7,9 @@ using api.Models.DTO;
 using api.Services;
 using Microsoft.AspNetCore.Mvc;
 
+
+ // ** to create a controller, have to right click on the Controllers folder select New C# select API Controller then create the file name closes associated to the project what its supposed to do.
+
 namespace api.Controllers
 {
     [ApiController]
